@@ -63,7 +63,7 @@ def leader():
 			(trans,rot) = listener.lookupTransform("/map", "/base_link", now)
 		except (tf.LookupException,tf.ExtrapolationException):
 			print '\n<--------Exception Occurred-------->\n'
-		print trans
+		print type(trans)
 		print rot
 		updateLeaderPosition(trans)
 		now = rospy.Time(0)

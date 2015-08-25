@@ -43,16 +43,13 @@ def cleanup(signal, frame):
  
 signal.signal(signal.SIGINT, cleanup)
 
-def followerPos(fPos):
-#	(data,addr) = client_socket.recvfrom(SIZE)
+def followerPos():
 	time.sleep(5)
-        data_mutex.acquire()
-	data_str_local = data_str
-        data_mutex.release()
 
-	#print 'Data received is %s' % str(fPos)
-#       rospy.init_node('nav_test', anonymous=False)
-#	data = '1,1,1'
+	data_mutex.acquire()
+	data_str_local = data_str
+	data_mutex.release()
+
 	data = str(data_str_local)
 	print 'Data received is %s' % str(data)
 	data = data.split(',')
@@ -61,9 +58,9 @@ def followerPos(fPos):
 	y = float(data[1])
 	z = float(data[2])
 	
-	x = x - float(fPos.info.origin.position.x)
-	y = y - float(fPos.info.origin.position.y)
-	z = z - float(fPos.info.origin.position.z)
+	# x = x - float(fPos.info.origin.position.x)
+	# y = y - float(fPos.info.origin.position.y)
+	# z = z - float(fPos.info.origin.position.z)
 	rospy.on_shutdown(shutdown)
 	#what to do if shut down (e.g. ctrl + C or failure)
 
@@ -111,9 +108,9 @@ def follower():
         pingThread.daemon = True
         pingThread.start()
 	rospy.init_node('follower', anonymous=True)
-	#while (True):
-	#	followerPos('asd')
-	rospy.Subscriber("move_base/local_costmap/costmap", OccupancyGrid, followerPos)
+	while (True):
+		followerPos()
+	# rospy.Subscriber("move_base/local_costmap/costmap", OccupancyGrid, followerPos)
 	rospy.spin()
 
 if __name__ == '__main__':
