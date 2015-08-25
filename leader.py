@@ -22,10 +22,9 @@ data_mutex = threading.Lock()
 
 def updateLeaderPosition(data):
 	pos_arr = []
-	pos_arr.append(str(data.info.origin.position.x))
-	pos_arr.append(str(data.info.origin.position.y))
-	pos_arr.append(str(data.info.origin.position.z))
-	# rospy.loginfo(rospy.get_caller_id())
+	pos_arr.append(str(data[0]))
+	pos_arr.append(str(data[1]))
+	pos_arr.append(str(data[2]))
 	data_mutex.acquire()
 	global data_str
 	data_str = ','.join(pos_arr)
@@ -33,7 +32,7 @@ def updateLeaderPosition(data):
 
 def sendLeaderPosition():
 	while True:
-#		os.system('clear')
+		# os.system('clear')
 		data_mutex.acquire()
 		data_str_local = data_str
 		data_mutex.release()
@@ -49,16 +48,12 @@ def cleanup(signal, frame):
 signal.signal(signal.SIGINT, cleanup)
 
 def leader():
-	# rospy.on_shutdown(shutdown)
 	rospy.init_node('leader', anonymous=True)
-	# rospy.Subscriber("move_base/local_costmap/costmap", OccupancyGrid, updateLeaderPosition)
 	pingThread = threading.Thread(target=sendLeaderPosition)
 	pingThread.daemon = True
 	pingThread.start()
-#	rospy.spin()
 	listener = tf.TransformListener()
 	rate = rospy.Rate(10.0)
-	time.sleep(1)
 	trans = ''
 	rot = ''
 	while not rospy.is_shutdown():
@@ -70,6 +65,7 @@ def leader():
 			print '\n<--------Exception Occurred-------->\n'
 		print trans
 		print rot
+		updateLeaderPosition(trans)
 		now = rospy.Time(0)
 		rate.sleep()
 
