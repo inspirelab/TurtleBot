@@ -11,6 +11,7 @@ import random
 import threading
 import signal
 import time
+import tf
 
 PORT_NUMBER = 5156
 SERVER_IP = '10.42.0.45'
@@ -50,11 +51,21 @@ signal.signal(signal.SIGINT, cleanup)
 def leader():
 	# rospy.on_shutdown(shutdown)
 	rospy.init_node('leader', anonymous=True)
-	rospy.Subscriber("move_base/local_costmap/costmap", OccupancyGrid, updateLeaderPosition)
+	# rospy.Subscriber("move_base/local_costmap/costmap", OccupancyGrid, updateLeaderPosition)
 	pingThread = threading.Thread(target=sendLeaderPosition)
 	pingThread.daemon = True
 	pingThread.start()
 	rospy.spin()
+	listener = tf.TransformListener()
+	rate = rospy.Rate(10.0)
+	while not rospy.is_shutdown():
+		try:
+			now = rospy.Time(0)
+			(trans,rot) = listener.lookupTransform("/base_link", "/map", now)
+		except: (tf.LookupException):
+			print 'LookupException'
+		print trans
+		print rot
 
 if __name__ == '__main__':
     try:
