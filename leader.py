@@ -21,8 +21,9 @@ data_str = '0,0,0'
 data_mutex = threading.Lock()
 
 def updateLeaderPosition(data):
-	data = data[1:-1]
-	pos_arr = data.split(',')
+	if(data == ''):
+		return
+	pos_arr = []
 	pos_arr.append(str(data[0]))
 	pos_arr.append(str(data[1]))
 	pos_arr.append(str(data[2]))
@@ -33,14 +34,14 @@ def updateLeaderPosition(data):
 
 def sendLeaderPosition():
 	while True:
-		# os.system('clear')
+		os.system('clear')
 		data_mutex.acquire()
 		data_str_local = data_str
 		data_mutex.release()
 		serv_socket.sendto(data_str_local, (SERVER_IP, PORT_NUMBER))
 		rospy.loginfo("Data sent to %s at port %s" % (SERVER_IP, PORT_NUMBER))
 		rospy.loginfo("LEADER_POS:= [%s]", data_str_local)
-		time.sleep(0.5)
+		time.sleep(0.01)
 
 def cleanup(signal, frame):
 	print 'Exiting Leader Behaviour'
@@ -62,10 +63,8 @@ def leader():
 			print 'checking tf status'
 			now = listener.getLatestCommonTime("/map","/base_link")
 			(trans,rot) = listener.lookupTransform("/map", "/base_link", now)
-		except (tf.LookupException,tf.ExtrapolationException):
+		except (tf.LookupException,tf.ExtrapolationException,Exception):
 			print '\n<--------Exception Occurred-------->\n'
-		print type(trans)
-		print rot
 		updateLeaderPosition(trans)
 		now = rospy.Time(0)
 		rate.sleep()
