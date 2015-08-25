@@ -14,7 +14,7 @@ import time
 import tf
 
 PORT_NUMBER = 5156
-SERVER_IP = '10.42.0.45'
+SERVER_IP = '10.42.0.81'
 SIZE = 1024
 serv_socket = socket(AF_INET, SOCK_DGRAM)
 data_str = '0,0,0'
