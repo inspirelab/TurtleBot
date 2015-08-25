@@ -6,6 +6,7 @@ import datetime
 from socket import socket, AF_INET, SOCK_DGRAM
 from std_msgs.msg import String
 from nav_msgs.msg import OccupancyGrid
+from tf2_msgs.msg import TFMessage
 import random
 import threading
 import signal
@@ -15,7 +16,7 @@ PORT_NUMBER = 5156
 SERVER_IP = '10.42.0.45'
 SIZE = 1024
 serv_socket = socket(AF_INET, SOCK_DGRAM)
-data_str = '1,1,1'
+data_str = '0,0,0'
 data_mutex = threading.Lock()
 
 def updateLeaderPosition(data):
@@ -49,7 +50,7 @@ signal.signal(signal.SIGINT, cleanup)
 def leader():
 	# rospy.on_shutdown(shutdown)
 	rospy.init_node('leader', anonymous=True)
-	# rospy.Subscriber("move_base/local_costmap/costmap", OccupancyGrid, updateLeaderPosition)
+	rospy.Subscriber("move_base/local_costmap/costmap", OccupancyGrid, updateLeaderPosition)
 	pingThread = threading.Thread(target=sendLeaderPosition)
 	pingThread.daemon = True
 	pingThread.start()
