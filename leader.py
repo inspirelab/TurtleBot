@@ -21,7 +21,8 @@ data_str = '0,0,0'
 data_mutex = threading.Lock()
 
 def updateLeaderPosition(data):
-	pos_arr = []
+	data = data[1:-1]
+	pos_arr = data.split(',')
 	pos_arr.append(str(data[0]))
 	pos_arr.append(str(data[1]))
 	pos_arr.append(str(data[2]))
