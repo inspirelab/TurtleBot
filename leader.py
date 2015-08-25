@@ -33,7 +33,7 @@ def updateLeaderPosition(data):
 
 def sendLeaderPosition():
 	while True:
-		os.system('clear')
+#		os.system('clear')
 		data_mutex.acquire()
 		data_str_local = data_str
 		data_mutex.release()
@@ -55,17 +55,23 @@ def leader():
 	pingThread = threading.Thread(target=sendLeaderPosition)
 	pingThread.daemon = True
 	pingThread.start()
-	rospy.spin()
+#	rospy.spin()
 	listener = tf.TransformListener()
 	rate = rospy.Rate(10.0)
+	time.sleep(1)
+	trans = ''
+	rot = ''
 	while not rospy.is_shutdown():
 		try:
-			now = rospy.Time(0)
-			(trans,rot) = listener.lookupTransform("/base_link", "/map", now)
-		except: (tf.LookupException):
-			print 'LookupException'
+			print 'checking tf status'
+			now = listener.getLatestCommonTime("/map","/base_link")
+			(trans,rot) = listener.lookupTransform("/map", "/base_link", now)
+		except (tf.LookupException,tf.ExtrapolationException):
+			print '\n<--------Exception Occurred-------->\n'
 		print trans
 		print rot
+		now = rospy.Time(0)
+		rate.sleep()
 
 if __name__ == '__main__':
     try:
