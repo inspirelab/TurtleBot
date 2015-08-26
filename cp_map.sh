@@ -1,1 +1,1 @@
-mv -f ~/my_map.* /tmp/
+cp -f ./my_map.* /tmp/
