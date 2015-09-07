@@ -22,67 +22,75 @@ class Graph:
 
 	def FloydWarshall(self):
 		size = self.sz
-		cost_matrix = numpy.zeros((size, size), dtype=numpy.int)
-		path_matrix = numpy.zeros((size, size), dtype=numpy.int)
-		cost_matrix.fill(self.INF)
-		path_matrix.fill(-1)
+		self.cost_matrix = numpy.zeros((size, size), dtype=numpy.int)
+		self.path_matrix = numpy.zeros((size, size), dtype=numpy.int)
+		self.cost_matrix.fill(self.INF)
+		self.path_matrix.fill(-1)
 		for i in range(size):
 			for j in range(size):
 				if(self.grid[i][j] != self.INF):
-					cost_matrix[i][j] = self.grid[i][j]
-					path_matrix[i][j] = i
+					self.cost_matrix[i][j] = self.grid[i][j]
+					self.path_matrix[i][j] = i
 		for k in range(size):
 			for i in range(size):
 				for j in range(size):
-					if(cost_matrix[i][j] > cost_matrix[i][k] + cost_matrix[k][j]):
-						cost_matrix[i][j] = cost_matrix[i][k] + cost_matrix[k][j]
-						path_matrix[i][j] = path_matrix[k][j]
-		return (cost_matrix, path_matrix)
+					if(self.cost_matrix[i][j] > self.cost_matrix[i][k] + self.cost_matrix[k][j]):
+						self.cost_matrix[i][j] = self.cost_matrix[i][k] + self.cost_matrix[k][j]
+						self.path_matrix[i][j] = self.path_matrix[k][j]
+		print self.cost_matrix
+		print self.path_matrix
+		return (self.cost_matrix, self.path_matrix)
 
+	def AddPathToGraph( self, start, end, gr, vertexList, guardFlag, guardCount):
+		cur1 = self.path_matrix[start][end]
+		cur2 = end
+		while True:
+			if guardFlag[cur2]:
+				guardFlag[cur2] = False
+				guardCount = guardCount - 1 
+
+			vertexList.append(cur2)
+			gr.addEdge(cur1, cur2, self.cost_matrix[cur1][cur2])
+			
+			cur2 = cur1
+			cur1 = self.path_matrix[start][cur2]
+			
+			if (cur1 != start):
+				break;
+		return guardCount
 	def GraphReduction(self):
-		min = INF
+		smallest = self.INF
 		mini = -1
 		minj = -1
 		redG = Graph(self.sz)
 		vertexList = []
-		heapq prq
+		prq = []
 
 		guardFlag = numpy.zeros(self.sz, dtype=numpy.bool)
 		guardFlag.fill(True)
-		guardCount = len(guard)
+		guardCount = len(self.guard)
 
 		for i in range(len(self.guard)):
 			for j in range(i+1, len(self.guard)):
-				if (min > cost_matrix[i][j])
-					min = cost_matrix[i][j]
+				if (smallest > self.cost_matrix[i][j]):
+					smallest = self.cost_matrix[i][j]
 					mini = i
 					minj = j
-		AddPathToGraph(mini, minj, redG, vertexList, guardFlag)
-
+		guardCount = self.AddPathToGraph(mini, minj, redG, vertexList, guardFlag, guardCount)
+		# print "LOOK HERE"
+		# print self.guard
 		prevsize = 0
 		while guardCount != 0:
-			for i in range(prevsize, len(vertexList))
-				for j in range(len(self.guard)))
-					if (guardFlag[guard[j]])
-						heappush(prq, (cost_matrix[vertexList[i]][guard[j]],vertexList[i],guard[j]))
+			for i in range(prevsize, len(vertexList)):
+				for j in range(len(self.guard)):
+					if (guardFlag[self.guard[j]]):
+						heapq.heappush(prq, (self.cost_matrix[vertexList[i]][self.guard[j]],vertexList[i],self.guard[j]))
 			
 			prevsize = len(vertexList)
-			el = heappop(prq)
-			if (guardFlag[el[2]])
-				AddPathToGraph(el[1], el[2], redG, vertexList, guardFlag)
+			el = heapq.heappop(prq)
+			if (guardFlag[el[2]]):
+				guardCount = self.AddPathToGraph(el[1], el[2], redG, vertexList, guardFlag, guardCount)
+		print redG.grid
 
-	def AddPathToGraph( start, end, gr, vertexList, guardFlag):
-		cur1 = pathmatrix[start][end]
-		cur2 = end
-		while True:
-			(guardflag[cur2] = False && guardCount--) if guardFlag[cur2]
 
-			vertexList.append(cur2)
-			gr.addEdge(cur1, cur2, cost_matrix[cur1][cur2])
-			
-			cur2 = cur1
-			cur1 = pathmatrix[start][cur2]
-			
-			if (cur1 != start)
-				break;
 
