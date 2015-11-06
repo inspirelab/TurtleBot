@@ -44,7 +44,7 @@ def cleanup(signal, frame):
 signal.signal(signal.SIGINT, cleanup)
 
 def followerPos():
-	time.sleep(5)
+	#time.sleep(5)
 
 	data_mutex.acquire()
 	data_str_local = data_str
@@ -83,6 +83,8 @@ def followerPos():
 
 	#start moving
         move_base.send_goal(goal)
+        time.sleep(5) #Refresh rate is 5 seconds
+        move_base.cancel_goal()
 
 	#allow TurtleBot up to 60 seconds to complete task
 	success = move_base.wait_for_result(rospy.Duration(60)) 
