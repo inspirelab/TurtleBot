@@ -83,6 +83,8 @@ def followerPos():
 
 	#start moving
         move_base.send_goal(goal)
+        time.sleep(5) #Refresh rate is 5 seconds
+        move_base.cancel_goal()
 
 	#allow TurtleBot up to 60 seconds to complete task
 	success = move_base.wait_for_result(rospy.Duration(60)) 
