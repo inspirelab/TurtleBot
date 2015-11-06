@@ -42,7 +42,7 @@ class GoToPose():
 	goal.target_pose.header.frame_id = 'map'
 	goal.target_pose.header.stamp = rospy.Time.now()
 	#customize the following Point() values so they are appropriate for your location
-	goal.target_pose.pose = Pose(Point(0.77, 3.99, 0.000), Quaternion(0.000, 0.000, 0.892, -1.500))
+	goal.target_pose.pose = Pose(Point(1.67, -1.09, 0.000), Quaternion(0.000, 0.000, 0.892, -1.500))
 
 	#start moving
         self.move_base.send_goal(goal)

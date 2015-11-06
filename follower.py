@@ -44,7 +44,7 @@ def cleanup(signal, frame):
 signal.signal(signal.SIGINT, cleanup)
 
 def followerPos():
-	time.sleep(5)
+	#time.sleep(5)
 
 	data_mutex.acquire()
 	data_str_local = data_str
@@ -96,7 +96,7 @@ def followerPos():
 		state = move_base.get_state()
 		if state == GoalStatus.SUCCEEDED:
 		    rospy.loginfo("Hooray, reached the desired pose")
-
+	time.sleep(25)
 
 
 def shutdown():
